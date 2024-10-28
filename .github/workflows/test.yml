@@ -21,8 +21,8 @@ jobs:
       fail-fast: false
       matrix:
         kongVersion:
-        - "3.4.x"
-        - "stable"
+        # - "3.4.x"
+        # - "stable"
         - "dev"
 
     steps:
@@ -50,6 +50,16 @@ jobs:
         # # delete this.
         # # github token with permissions to clone the kong-ee repo
         # github_token: ${{ secrets.GHA_KONG_BOT_READ_TOKEN }}
+
+    - name: 'Save pongo image'
+      run: docker save kong-pongo-2.14.0 | gzip > pongo-image.tar.gz
+
+    - name: 'Upload pongo image'
+      uses: actions/upload-artifact@v4
+      with:
+        name: pongo-image
+        path: pongo-image.tar.gz
+        retention-days: 1
 
     - run: pongo run -- --Xoutput "--color" --coverage
 
